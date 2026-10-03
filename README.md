@@ -1,3 +1,15 @@
+---
+library_name: transformers
+pipeline_tag: text-generation
+tags:
+- code
+- colgrep
+---
+
+# ColGrep Default MiniCPM5 2B
+
+## Evaluation results
+
 | Metric | SWE-bench Lite | Multi-SWE-bench Flash |
 |---|---:|---:|
 | File F1 (%) | 75.19 ± 0.70 | 61.59 ± 0.47 |
