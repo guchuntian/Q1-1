@@ -50,9 +50,13 @@ Inference runs locally through llama.cpp, with CPU support and GPU acceleration 
 
 ## Training and harness
 
-ColGREP-Agent-2B is built on MiniCPM5-2B and trained in two stages. We construct our training environments from **multilingual code repositories paired with issue descriptions and dedicated bug-fix commits**, using the pre-patch repository state as the search environment and the corresponding patches to derive gold file and line-level localization targets. We first apply a short cold-start supervised fine-tuning (SFT) phase to teach the model tool-call formatting, command ordering, argument and flag usage, and effective repository exploration strategies, with an emphasis on using ColGrep rather than traditional grep-based search. We then train the model for 500 steps using Group Relative Policy Optimization (GRPO) in a dedicated code-localization environment, rewarding accurate file and line identification while penalizing unnecessary exploration steps.
+**ColGREP-Agent-2B** is built on MiniCPM5-2B and trained in two stages: a short supervised fine-tuning (SFT) cold start followed by reinforcement learning (RL) using DAPO.
 
-The harness provides three tools:
+We construct multilingual code-localization environments from [nebius/SWE-rebench](https://huggingface.co/datasets/nebius/SWE-rebench), [internlm/SWE-Fixer-Train-110K](https://huggingface.co/datasets/internlm/SWE-Fixer-Train-110K), and additional scraped repositories covering multiple programming languages. Each training instance pairs a repository with an issue description and a dedicated bug-fix commit. We use the pre-patch repository state as the search environment and derive gold file- and line-level localization targets from the corresponding patch. These data sources are used across both the SFT and RL stages.
+
+We first perform a short cold-start SFT phase using traces generated and filtered with **Qwen3.5-27B as a teacher model**. This stage teaches tool-call formatting, command ordering, argument and flag usage, and effective repository exploration strategies, with an emphasis on semantic search through ColGrep rather than traditional grep-based search. We then train for **500 steps using DAPO** in a dedicated code-localization environment, rewarding accurate file- and line-level identification while penalizing unnecessary exploration steps.
+
+The model operates in a repository exploration environment with access to three tools:
 
 | Tool | Purpose |
 |---|---|
@@ -60,7 +64,7 @@ The harness provides three tools:
 | `terminal` | Read files and inspect the repository through read-only commands. |
 | `finish` | Submit relevant locations as `path/to/file:START-END`. |
 
-The model searches and reads within a 10-turn budget, then returns the identified files and line numbers.
+The agent has a **10-turn budget** to search and inspect the repository before submitting its final prediction as a set of relevant file paths and line ranges.
 
 ## Evaluation
 
