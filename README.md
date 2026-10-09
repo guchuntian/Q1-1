@@ -68,8 +68,9 @@ The agent has a **10-turn budget** to search and inspect the repository before s
 
 ## Evaluation
 
-We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099). Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
+![ColGREP performance vs. model size](media/colgrep_performance_vs_model_size.png)
 
+We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099). Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
 
 <table>
   <thead>
@@ -77,7 +78,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <th rowspan="2">Model</th>
       <th rowspan="2">Harness</th>
       <th colspan="2">SWE-bench Lite</th>
-      <th colspan="2">Multi-SWE-bench</th>
+      <th colspan="2">Multi-SWE-bench Flash</th>
     </tr>
     <tr>
       <th>File F1</th>
@@ -88,7 +89,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
   </thead>
   <tbody>
     <tr style="background-color: rgba(0, 102, 255, 0.10);">
-      <td><b>ColGrep-Agent-2B</b></td>
+      <td><b>lightonai/colgrep-agent-2B</b></td>
       <td><b>ColGrep</b></td>
       <td><b>76.18</b></td>
       <td><b>19.92</b></td>
@@ -96,7 +97,23 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <td><b>15.93</b></td>
     </tr>
     <tr>
-      <td>Qwen-3.5-27B</td>
+      <td>openbmb/MiniCPM5-2B</td>
+      <td>ColGrep</td>
+      <td>66.72</td>
+      <td>9.62</td>
+      <td>52.01</td>
+      <td>11.31</td>
+    </tr>
+    <tr>
+      <td>google/gemma-4-31B-it</td>
+      <td>ColGrep</td>
+      <td>79.93</td>
+      <td>17.08</td>
+      <td>68.30</td>
+      <td>19.14</td>
+    </tr>
+    <tr>
+      <td>Qwen/Qwen3.5-27B</td>
       <td>ColGrep</td>
       <td>77.93</td>
       <td>15.71</td>
@@ -104,7 +121,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <td>16.63</td>
     </tr>
     <tr>
-      <td>Gemma-4-26B-A4B</td>
+      <td>google/gemma-4-26B-A4B-it</td>
       <td>ColGrep</td>
       <td>76.35</td>
       <td>13.34</td>
@@ -112,7 +129,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <td>14.75</td>
     </tr>
     <tr>
-      <td>Qwen-3.8-27B</td>
+      <td>Qwen/Qwen3.8-27B</td>
       <td>ColGrep</td>
       <td>60.80</td>
       <td>7.70</td>
