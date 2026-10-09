@@ -94,7 +94,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <td><b>15.93</b></td>
     </tr>
     <tr>
-      <td>Qwen-3.5 27B</td>
+      <td>Qwen-3.5-27B</td>
       <td>ColGrep</td>
       <td>77.93</td>
       <td>15.71</td>
