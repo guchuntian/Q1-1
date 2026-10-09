@@ -177,29 +177,87 @@ The agent has a **10-turn budget** to search and inspect the repository before s
 
 ## 📊 Evaluation
 
-![ColGrep performance vs. model size](media/colgrep_performance_vs_model_size.png)
+![ColGREP performance vs. model size](media/colgrep_performance_vs_model_size.png)
 
-We evaluate ColGrep-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099).
+We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099). Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
 
-Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
-
-### Comparison with other models
-
-All models are evaluated using the ColGrep harness.
-
-| Model | Harness | SWE-bench Lite File F1 | SWE-bench Lite Line F1 | Multi-SWE-bench Flash File F1 | Multi-SWE-bench Flash Line F1 |
-|---|---|---:|---:|---:|---:|
-| **lightonai/colgrep-agent-2B** | **ColGrep** | **76.18** | **19.92** | **62.57** | **15.93** |
-| openbmb/MiniCPM5-2B | ColGrep | 66.72 | 9.62 | 52.01 | 11.31 |
-| google/gemma-4-31B-it | ColGrep | 79.93 | 17.08 | 68.30 | 19.14 |
-| Qwen/Qwen3.5-27B | ColGrep | 77.93 | 15.71 | 68.28 | 16.63 |
-| google/gemma-4-26B-A4B-it | ColGrep | 76.35 | 13.34 | 63.50 | 14.75 |
-| Qwen/Qwen3.8-27B | ColGrep | 60.80 | 7.70 | 59.68 | 11.50 |
-| deepseek-ai/DeepSeek-V4-Flash | ColGrep | 74.04 | 11.36 | 64.26 | 13.64 |
-
-File F1 measures overlap with reference files, while Line F1 measures overlap with reference lines. Higher values indicate more accurate localization.
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Model</th>
+      <th rowspan="2">Harness</th>
+      <th colspan="2">SWE-bench Lite</th>
+      <th colspan="2">Multi-SWE-bench Flash</th>
+    </tr>
+    <tr>
+      <th>File F1</th>
+      <th>Line F1</th>
+      <th>File F1</th>
+      <th>Line F1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color: rgba(0, 102, 255, 0.10);">
+      <td><b>lightonai/colgrep-agent-2B</b></td>
+      <td><b>ColGrep</b></td>
+      <td><b>76.18</b></td>
+      <td><b>19.92</b></td>
+      <td><b>62.57</b></td>
+      <td><b>15.93</b></td>
+    </tr>
+    <tr>
+      <td>openbmb/MiniCPM5-2B</td>
+      <td>ColGrep</td>
+      <td>66.72</td>
+      <td>9.62</td>
+      <td>52.01</td>
+      <td>11.31</td>
+    </tr>
+    <tr>
+      <td>google/gemma-4-31B-it</td>
+      <td>ColGrep</td>
+      <td>79.93</td>
+      <td>17.08</td>
+      <td>68.30</td>
+      <td>19.14</td>
+    </tr>
+    <tr>
+      <td>Qwen/Qwen3.5-27B</td>
+      <td>ColGrep</td>
+      <td>77.93</td>
+      <td>15.71</td>
+      <td>68.28</td>
+      <td>16.63</td>
+    </tr>
+    <tr>
+      <td>google/gemma-4-26B-A4B-it</td>
+      <td>ColGrep</td>
+      <td>76.35</td>
+      <td>13.34</td>
+      <td>63.50</td>
+      <td>14.75</td>
+    </tr>
+    <tr>
+      <td>Qwen/Qwen3.8-27B</td>
+      <td>ColGrep</td>
+      <td>60.80</td>
+      <td>7.70</td>
+      <td>59.68</td>
+      <td>11.50</td>
+    </tr>
+    <tr>
+      <td>deepseek-ai/DeepSeek-V4-Flash</td>
+      <td>ColGrep</td>
+      <td>74.04</td>
+      <td>11.36</td>
+      <td>64.26</td>
+      <td>13.64</td>
+    </tr>
+  </tbody>
+</table>
 
 All models use the ColGREP harness. File and line F1 measure overlap with reference files and lines, respectively. Scores are percentages averaged over five seeds (300 instances per benchmark per seed), using strict predictions without rescue, a 10-turn limit with mandatory final submission, and temperature 0.6 without reasoning for comparison models.
+
 
 ## 📚 Citation
 
