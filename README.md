@@ -120,6 +120,4 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
   </tbody>
 </table>
 
-All models are used with our ColGrep harness. Scores are F1 percentages, averaged across five seeds with 300 instances per benchmark per seed, using strict predictions without rescue. Evaluation uses a maximum of 10 turns, with a required final submission on turn 10; comparison models run without reasoning at temperature 0.6.
-
-File F1 measures overlap between predicted and reference files; line F1 measures overlap at the line level. These are **code-localization scores**, not SWE-bench issue-resolution rates. The model returns locations for a developer or downstream agent to inspect and edit.
+All models use the ColGREP harness. File and line F1 measure overlap with reference files and lines, respectively. Scores are percentages averaged over five seeds (300 instances per benchmark per seed), using strict predictions without rescue, a 10-turn limit with mandatory final submission, and temperature 0.6 without reasoning for comparison models.
