@@ -1,3 +1,4 @@
+
 ---
 library_name: transformers
 base_model: openbmb/MiniCPM5-2B
@@ -23,32 +24,139 @@ license: apache-2.0
 [![LinkedIn](https://img.shields.io/badge/LightOn-LinkedIn-0A66C2?logo=linkedin)](https://www.linkedin.com/company/lighton/)
 [![X](https://img.shields.io/badge/@LightOnIO-X-black?logo=x)](https://x.com/LightOnIO)
 
-📄 [Paper](https://arxiv.org/abs/2610.05099) | 📝 [Blog Post](https://huggingface.co/blog/lightonai/colgrep-agent/) | 💻 [GitHub](https://github.com/lightonai/next-plaid) | 🤗 [ColGrep-Agent-2B](https://huggingface.co/lightonai/colgrep-agent-2B)
+📄 [Paper](https://arxiv.org/abs/2610.05099) | 📝 [Blog Post](https://huggingface.co/blog/lightonai/colgrep-agent/) | 💻 [GitHub](https://github.com/lightonai/next-plaid) | 🤗 [Model](https://huggingface.co/lightonai/colgrep-agent-2B) | 📦 [GGUF](https://huggingface.co/lightonai/colgrep-agent-2B-GGUF)
 
 </div>
 
-**ColGrep-Agent-2B** is a lightweight agent designed to efficiently locate relevant code in a repository given a GitHub issue, bug report, feature request, or natural-language problem statement. It iteratively searches and reads the codebase using [ColGrep](https://github.com/lightonai/next-plaid) and read-only terminal commands, progressively refining its search over multiple turns based on retrieved results until it identifies the relevant files and line ranges needed to address the task.
+**ColGrep-Agent-2B** is a lightweight code-localization agent designed to identify the files and line ranges relevant to a GitHub issue, bug report, feature request, or natural-language question about a repository.
 
-The goal is to offload repository exploration from larger coding models. Instead of spending thousands of tokens searching through files before making a fix, a larger model can delegate this step to **ColGrep-Agent-2B** and receive a focused set of relevant code locations. Its small footprint enables fast, inexpensive, local inference, making it practical as a search sub-agent in coding workflows or as a standalone tool for developers navigating unfamiliar codebases.
+Given a question such as *"Where are retries configured?"* or *"Why does the export crash on empty files?"*, the agent iteratively searches the repository using [ColGrep](https://github.com/lightonai/next-plaid/tree/main/colgrep), reads candidate files through a read-only terminal, and returns the precise code locations relevant to the task.
 
-## ColGREP
+The model powers [`colgrep --agent`](https://github.com/lightonai/next-plaid/tree/main/colgrep#agent-mode---agent) and is designed to **offload repository exploration from larger coding agents**. Rather than consuming thousands of tokens searching through files before making a fix, a larger model can delegate code localization to ColGrep-Agent-2B and receive a focused list of relevant locations.
 
-[ColGrep](https://github.com/lightonai/next-plaid) is a semantic code search tool for your terminal and coding agents, built on the NextPlaid search engine. It combines natural-language search with regex filtering to find code by both meaning and exact matches. ColGrep Agent adds an iterative search-and-read loop: it follows leads, inspects results, and selects the relevant lines.
+Its small footprint enables practical local inference, with GPU acceleration when available, without requiring Python, a separate inference server, or an API key.
 
-## Quick start
+<p align="center">
+  <img width="820" src="media/colgrep-demo.gif" alt="colgrep: a semantic search, then colgrep --agent"/>
+</p>
 
-Install ColGrep via Homebrew (macOS or Linux), download the [GGUF model](https://huggingface.co/lightonai/colgrep-agent-2B-GGUF), and start searching your codebase:
+
+## 🚀 Quick start
+
+### 1. Install ColGrep and the model
+
+**Homebrew (macOS / Linux)**
 
 ```bash
-brew install lightonai/tap/colgrep  # Install ColGREP
-colgrep --install-agent             # Download the 2B agent model
-colgrep init                        # Index your repository
-colgrep --agent "Where is the database connection pool configured?"
+brew install lightonai/tap/colgrep && colgrep --install-agent
 ```
 
-Inference runs locally through llama.cpp, with CPU support and GPU acceleration where available. See the [ColGrep documentation](https://github.com/lightonai/next-plaid/blob/main/colgrep/README.md#agent-mode---agent) for other installation methods and runtime settings.
+**Shell installer (macOS / Linux)**
 
-## Training and harness
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/lightonai/next-plaid/releases/latest/download/colgrep-installer.sh | sh && "${CARGO_HOME:-$HOME/.cargo}/bin/colgrep" --install-agent
+```
+
+**Windows (PowerShell)**
+
+```powershell
+irm https://github.com/lightonai/next-plaid/releases/latest/download/colgrep-installer.ps1 | iex
+colgrep --install-agent
+```
+
+**Cargo (from source)**
+
+```bash
+cargo install colgrep && colgrep --install-agent
+```
+
+The `colgrep --install-agent` command downloads the default `colgrep-agent-2B-Q8_0.gguf` model (approximately 2.5 GB), verifies that it loads, and prepares the prompt cache to accelerate the first inference.
+
+Installation is required only once. No Python environment, external inference server, or API key is necessary.
+
+### 2. Index a repository
+
+```bash
+cd /path/to/project
+colgrep init
+```
+
+After the initial indexing, subsequent searches automatically detect modified files and update the index before answering.
+
+### 3. Ask a question
+
+```bash
+colgrep --agent "where does the agent decide which GPU backend llama.cpp uses"
+```
+
+The following example shows a real session on ColGrep's own source code, running on an M3 Pro with Metal acceleration. Individual tool results have been omitted for readability.
+
+```text
+$ colgrep --agent "where does the agent decide which GPU backend llama.cpp uses"
+◆ colgrep agent  · colgrep-agent-2B-Q8_0.gguf (GPU)
+❯ where does the agent decide which GPU backend llama.cpp uses
+
+  ● colgrep   llama.cpp GPU backend
+  ● terminal  cat -n agent/src/llm/llama.rs
+  ● terminal  cat -n agent/src/llm/server.rs
+  ● terminal  cat -n agent/src/engine.rs
+  ● terminal  cat -n agent/src/llm/llama.rs | sed -n '80,150p'
+  ● terminal  cat -n agent/src/llm/server.rs | sed -n '65,130p'
+  ● colgrep   find_gpu
+  ● terminal  cat -n agent/src/llm/server.rs | sed -n '1,100p'
+  ● finish    agent/src/llm/server.rs:103-105, agent/src/llm/server.rs:65-69, …
+
+✓ 5 locations · 9 turns · 2 searches · 6 terminal commands · 21.7s
+
+agent/src/llm/server.rs:103-105
+agent/src/llm/server.rs:65-69
+agent/src/llm/llama.rs:101-101
+agent/src/llm/llama.rs:115-116
+agent/src/engine.rs:57-67
+```
+
+The output follows the `path/to/file:START-END` format, making it directly usable by developers, scripts, and other coding agents.
+
+Agent progress is printed to **stderr only when running in a terminal**, while stdout contains only the resulting code locations. This separation makes the command easy to compose with other tools.
+
+**Additional usage examples**
+
+Scope the search to a directory and display the matching code lines:
+
+```bash
+colgrep --agent "crash when the config file is empty" ./backend -c
+```
+
+Return structured JSON for downstream applications:
+
+```bash
+colgrep --agent --json "where are retries configured"
+```
+
+## 🤖 Integration with coding agents
+
+ColGrep can be integrated into existing coding-agent workflows, allowing larger models to delegate repository exploration to a smaller specialized model.
+
+Install the corresponding hooks and skills:
+
+```bash
+colgrep --install-claude-code   # Claude Code
+colgrep --install-codex         # Codex
+colgrep --install-opencode      # OpenCode
+```
+
+For example, once configured, Claude Code can delegate open-ended questions such as *"Where is this behavior implemented?"* to `colgrep --agent`, receiving exact file paths and line ranges instead of performing every exploratory search itself.
+
+This division of labor allows larger coding agents to reserve more of their context and computation for understanding issues, planning changes, and generating patches.
+
+## 🔎 ColGrep
+
+[ColGrep](https://github.com/lightonai/next-plaid) is a semantic code search tool for terminals and coding agents, built on the NextPlaid search engine. It combines natural-language search with regex filtering to find code by both meaning and exact matches.
+
+**ColGrep-Agent-2B extends this search functionality with an iterative search-and-read loop.** Rather than relying on a single search query, the agent follows leads, inspects candidate files, refines its searches, and identifies relevant code locations over multiple turns.
+
+
+## 🧠 Training and harness
 
 **ColGREP-Agent-2B** is built on MiniCPM5-2B and trained in two stages: a short supervised fine-tuning (SFT) cold start followed by reinforcement learning (RL) using DAPO.
 
@@ -66,90 +174,36 @@ The model operates in a repository exploration environment with access to three 
 
 The agent has a **10-turn budget** to search and inspect the repository before submitting its final prediction as a set of relevant file paths and line ranges.
 
-## Evaluation
 
-![ColGREP performance vs. model size](media/colgrep_performance_vs_model_size.png)
+## 📊 Evaluation
 
-We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099). Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
+![ColGrep performance vs. model size](media/colgrep_performance_vs_model_size.png)
 
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Model</th>
-      <th rowspan="2">Harness</th>
-      <th colspan="2">SWE-bench Lite</th>
-      <th colspan="2">Multi-SWE-bench Flash</th>
-    </tr>
-    <tr>
-      <th>File F1</th>
-      <th>Line F1</th>
-      <th>File F1</th>
-      <th>Line F1</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr style="background-color: rgba(0, 102, 255, 0.10);">
-      <td><b>lightonai/colgrep-agent-2B</b></td>
-      <td><b>ColGrep</b></td>
-      <td><b>76.18</b></td>
-      <td><b>19.92</b></td>
-      <td><b>62.57</b></td>
-      <td><b>15.93</b></td>
-    </tr>
-    <tr>
-      <td>openbmb/MiniCPM5-2B</td>
-      <td>ColGrep</td>
-      <td>66.72</td>
-      <td>9.62</td>
-      <td>52.01</td>
-      <td>11.31</td>
-    </tr>
-    <tr>
-      <td>google/gemma-4-31B-it</td>
-      <td>ColGrep</td>
-      <td>79.93</td>
-      <td>17.08</td>
-      <td>68.30</td>
-      <td>19.14</td>
-    </tr>
-    <tr>
-      <td>Qwen/Qwen3.5-27B</td>
-      <td>ColGrep</td>
-      <td>77.93</td>
-      <td>15.71</td>
-      <td>68.28</td>
-      <td>16.63</td>
-    </tr>
-    <tr>
-      <td>google/gemma-4-26B-A4B-it</td>
-      <td>ColGrep</td>
-      <td>76.35</td>
-      <td>13.34</td>
-      <td>63.50</td>
-      <td>14.75</td>
-    </tr>
-    <tr>
-      <td>Qwen/Qwen3.8-27B</td>
-      <td>ColGrep</td>
-      <td>60.80</td>
-      <td>7.70</td>
-      <td>59.68</td>
-      <td>11.50</td>
-    </tr>
-    <tr>
-      <td>deepseek-ai/DeepSeek-V4-Flash</td>
-      <td>ColGrep</td>
-      <td>74.04</td>
-      <td>11.36</td>
-      <td>64.26</td>
-      <td>13.64</td>
-    </tr>
-  </tbody>
-</table>
+We evaluate ColGrep-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets/SWE-bench/SWE-bench_Lite) and [Multi-SWE-bench Flash](https://huggingface.co/datasets/ByteDance-Seed/Multi-SWE-bench-flash), adapting both benchmarks into code-localization tasks following the methodology described in our [paper](https://arxiv.org/abs/2610.05099).
+
+Rather than generating patches or resolving issues end-to-end, the model is tasked with identifying the files and lines of code relevant to each issue. This allows us to evaluate localization accuracy independently of code generation.
+
+### Comparison with other models
+
+All models are evaluated using the ColGrep harness.
+
+| Model | Harness | SWE-bench Lite File F1 | SWE-bench Lite Line F1 | Multi-SWE-bench Flash File F1 | Multi-SWE-bench Flash Line F1 |
+|---|---|---:|---:|---:|---:|
+| **lightonai/colgrep-agent-2B** | **ColGrep** | **76.18** | **19.92** | **62.57** | **15.93** |
+| openbmb/MiniCPM5-2B | ColGrep | 66.72 | 9.62 | 52.01 | 11.31 |
+| google/gemma-4-31B-it | ColGrep | 79.93 | 17.08 | 68.30 | 19.14 |
+| Qwen/Qwen3.5-27B | ColGrep | 77.93 | 15.71 | 68.28 | 16.63 |
+| google/gemma-4-26B-A4B-it | ColGrep | 76.35 | 13.34 | 63.50 | 14.75 |
+| Qwen/Qwen3.8-27B | ColGrep | 60.80 | 7.70 | 59.68 | 11.50 |
+| deepseek-ai/DeepSeek-V4-Flash | ColGrep | 74.04 | 11.36 | 64.26 | 13.64 |
+
+File F1 measures overlap with reference files, while Line F1 measures overlap with reference lines. Higher values indicate more accurate localization.
 
 All models use the ColGREP harness. File and line F1 measure overlap with reference files and lines, respectively. Scores are percentages averaged over five seeds (300 instances per benchmark per seed), using strict predictions without rescue, a 10-turn limit with mandatory final submission, and temperature 0.6 without reasoning for comparison models.
 
-## Citation
+## 📚 Citation
+
+If you use ColGrep-Agent-2B in your research or applications, please cite:
 
 ```bibtex
 @misc{colgrepagent_2026,
