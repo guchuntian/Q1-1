@@ -136,6 +136,14 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
       <td>59.68</td>
       <td>11.50</td>
     </tr>
+    <tr>
+      <td>deepseek-ai/DeepSeek-V4-Flash</td>
+      <td>ColGrep</td>
+      <td>74.04</td>
+      <td>11.36</td>
+      <td>64.26</td>
+      <td>13.64</td>
+    </tr>
   </tbody>
 </table>
 
