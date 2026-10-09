@@ -87,7 +87,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
   <tbody>
     <tr style="background-color: rgba(0, 102, 255, 0.10);">
       <td><b>ColGrep-Agent-2B</b></td>
-      <td><b>ColGrep Harness</b></td>
+      <td><b>ColGrep</b></td>
       <td><b>76.18</b></td>
       <td><b>19.92</b></td>
       <td><b>62.57</b></td>
@@ -95,7 +95,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
     </tr>
     <tr>
       <td>Qwen-3.5 27B</td>
-      <td>ColGrep Harness</td>
+      <td>ColGrep</td>
       <td>77.93</td>
       <td>15.71</td>
       <td>68.28</td>
@@ -103,7 +103,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
     </tr>
     <tr>
       <td>Gemma-4-26B-A4B</td>
-      <td>ColGrep Harness</td>
+      <td>ColGrep</td>
       <td>76.35</td>
       <td>13.34</td>
       <td>63.50</td>
@@ -111,7 +111,7 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
     </tr>
     <tr>
       <td>Qwen-3.8-27B</td>
-      <td>ColGrep Harness</td>
+      <td>ColGrep</td>
       <td>60.80</td>
       <td>7.70</td>
       <td>59.68</td>
