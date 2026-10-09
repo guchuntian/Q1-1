@@ -203,8 +203,6 @@ All models use the ColGREP harness. File and line F1 measure overlap with refere
 
 ## 📚 Citation
 
-If you use ColGrep-Agent-2B in your research or applications, please cite:
-
 ```bibtex
 @misc{colgrepagent_2026,
   title        = {ColGrep-Agent},
