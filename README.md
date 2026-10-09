@@ -27,12 +27,9 @@ license: apache-2.0
 
 </div>
 
+**ColGrep-Agent-2B** is a lightweight agent designed to efficiently locate relevant code in a repository given a GitHub issue, bug report, feature request, or natural-language problem statement. It iteratively searches and reads the codebase using [ColGrep](https://github.com/lightonai/next-plaid) and read-only terminal commands, progressively refining its search over multiple turns based on retrieved results until it identifies the relevant files and line ranges needed to address the task.
 
-**A small and efficient, local code-search agent that finds the files and lines relevant to a coding task.**
-
-**ColGrep-Agent-2B** is a lightweight agent designed to efficiently locate relevant code in a repository given a GitHub issue, bug report, feature request, or natural-language problem statement. It iteratively explores the codebase using [ColGrep](https://github.com/lightonai/next-plaid) and read-only terminal commands, narrowing down its search until it identifies the precise files and line ranges needed to address the task.
-
-The goal is to offload repository exploration from larger coding models. Instead of spending thousands of tokens searching through files before making a fix, a larger model can delegate this step to ColGrep Agent 2B and receive a focused set of relevant code locations. Its small footprint enables fast, inexpensive, local inference, making it practical as a search sub-agent in coding workflows or as a standalone tool for developers navigating unfamiliar codebases.
+The goal is to offload repository exploration from larger coding models. Instead of spending thousands of tokens searching through files before making a fix, a larger model can delegate this step to **ColGrep-Agent-2B** and receive a focused set of relevant code locations. Its small footprint enables fast, inexpensive, local inference, making it practical as a search sub-agent in coding workflows or as a standalone tool for developers navigating unfamiliar codebases.
 
 ## ColGREP
 
