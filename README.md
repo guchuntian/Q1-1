@@ -37,15 +37,13 @@ The goal is to offload repository exploration from larger coding models. Instead
 
 ## Quick start
 
-Install ColGrep with Homebrew on macOS or Linux, select the [GGUF model](https://huggingface.co/lightonai/colgrep-agent-2B-GGUF), and download it:
+Install ColGrep via Homebrew (macOS or Linux), download the [GGUF model](https://huggingface.co/lightonai/colgrep-agent-2B-GGUF), and start searching your codebase:
 
 ```bash
-brew install lightonai/tap/colgrep
-colgrep --install-agent
-
-# From your repository
-colgrep init
-colgrep --agent "Where are sessions invalidated after logout?"
+brew install lightonai/tap/colgrep  # Install ColGREP
+colgrep --install-agent             # Download the 2B agent model
+colgrep init                        # Index your repository
+colgrep --agent "Where is the database connection pool configured?"
 ```
 
 Inference runs locally through llama.cpp, with CPU support and GPU acceleration where available. See the [ColGrep documentation](https://github.com/lightonai/next-plaid/blob/main/colgrep/README.md#agent-mode---agent) for other installation methods and runtime settings.
@@ -121,3 +119,14 @@ We evaluate ColGREP-Agent-2B on [SWE-bench Lite](https://huggingface.co/datasets
 </table>
 
 All models use the ColGREP harness. File and line F1 measure overlap with reference files and lines, respectively. Scores are percentages averaged over five seeds (300 instances per benchmark per seed), using strict predictions without rescue, a 10-turn limit with mandatory final submission, and temperature 0.6 without reasoning for comparison models.
+
+## Citation
+
+```bibtex
+@misc{colgrepagent_2026,
+  title        = {ColGrep-Agent},
+  author       = {Maxence Lasbordes and Raphael Sourty and Amélie Chatelain and Aarush Sinha},
+  year         = {2026},
+  howpublished = {\url{https://huggingface.co/blog/lightonai/colgrep-agent/}}
+}
+```
