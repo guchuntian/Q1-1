@@ -264,7 +264,7 @@ All models use the ColGREP harness. File and line F1 measure overlap with refere
 ```bibtex
 @misc{colgrepagent_2026,
   title        = {ColGrep-Agent},
-  author       = {Maxence Lasbordes and Raphael Sourty and Amélie Chatelain and Aarush Sinha},
+  author       = {Maxence Lasbordes and Raphael Sourty and Aarush Sinha and Amélie Chatelain},
   year         = {2026},
   howpublished = {\url{https://huggingface.co/blog/lightonai/colgrep-agent/}}
 }
