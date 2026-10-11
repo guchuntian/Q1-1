@@ -158,11 +158,11 @@ This division of labor allows larger coding agents to reserve more of their cont
 
 ## 🧠 Training and harness
 
-**ColGREP-Agent-2B** is built on MiniCPM5-2B and trained in two stages: a short supervised fine-tuning (SFT) cold start followed by reinforcement learning (RL) using DAPO.
+**ColGREP-Agent-2B** is built on MiniCPM5-2B and trained in two stages: a short supervised fine-tuning (SFT) cold start followed by reinforcement learning (RL) using GRPO.
 
 We construct multilingual code-localization environments from [nebius/SWE-rebench](https://huggingface.co/datasets/nebius/SWE-rebench), [internlm/SWE-Fixer-Train-110K](https://huggingface.co/datasets/internlm/SWE-Fixer-Train-110K), and additional scraped repositories covering multiple programming languages. Each training instance pairs a repository with an issue description and a dedicated bug-fix commit. We use the pre-patch repository state as the search environment and derive gold file- and line-level localization targets from the corresponding patch. These data sources are used across both the SFT and RL stages.
 
-We first perform a short cold-start SFT phase using traces generated and filtered with **Qwen3.5-27B as a teacher model**. This stage teaches tool-call formatting, command ordering, argument and flag usage, and effective repository exploration strategies, with an emphasis on semantic search through ColGrep rather than traditional grep-based search. We then train for **500 steps using DAPO** in a dedicated code-localization environment, rewarding accurate file- and line-level identification while penalizing unnecessary exploration steps.
+We first perform a short cold-start SFT phase using traces generated and filtered with **Qwen3.5-27B as a teacher model**. This stage teaches tool-call formatting, command ordering, argument and flag usage, and effective repository exploration strategies, with an emphasis on semantic search through ColGrep rather than traditional grep-based search. We then train for **500 steps using GRPO** in a dedicated code-localization environment, rewarding accurate file- and line-level identification while penalizing unnecessary exploration steps.
 
 The model operates in a repository exploration environment with access to three tools:
 
